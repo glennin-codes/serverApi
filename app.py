@@ -70,7 +70,7 @@ print(f"Model trained successfully with accuracy score: {accuracy}")
 # Build the REST API with Flask
 app = Flask(__name__)
 
-CORS(app, origins="*")
+CORS(app)
 
 @app.route("/predict", methods=["POST"])
 def predict():
