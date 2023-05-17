@@ -75,8 +75,8 @@ CORS(app)
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
-    home_team_id = data["homeTeamId"]
-    away_team_id = data["awayTeamId"]
+    home_team_id = data["home_team_id"]
+    away_team_id = data["away_team_id"]
     prediction = model.predict([[home_team_id, away_team_id]])
     logging.info("Prediction made successfully")
     return jsonify({"prediction": int(prediction.argmax(axis=-1))})
