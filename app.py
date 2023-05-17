@@ -10,17 +10,22 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from flask_cors import CORS
 
-# Fetch the data from football-data.org API
-url = "https://api.football-data.org/v4/competitions/PL/matches?status=FINISHED"
-headers = {"X-Auth-Token": "5777078bb3ca4a72a3e01a5fdebac8db"}
-response = requests.get(url, headers=headers)
+
+leagues = ["CL", "PL", "BL1", "FL1", "SA", "PPL", "PD", "BSA"]
 matches = []
 
-if response.status_code == 200:
-    matches = response.json()["matches"]
-    logging.info("Data fetched successfully")
-else:
-    logging.error("Error fetching data")
+# Fetch matches for each league
+for league in leagues:
+    url = f"https://api.football-data.org/v4/competitions/{league}/matches?status=FINISHED"
+    headers = {"X-Auth-Token": "5777078bb3ca4a72a3e01a5fdebac8db"}
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        matches.extend(response.json()["matches"])
+        logging.info(f"Data fetched successfully for league {league}")
+    else:
+        logging.error(f"Error fetching data for league {league}")
+
 
 # Prepare the data for training
 data = []
@@ -70,8 +75,8 @@ CORS(app, origins="*")
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
-    home_team_id = data["home_team_id"]
-    away_team_id = data["away_team_id"]
+    home_team_id = data["homeTeamId"]
+    away_team_id = data["awayTeamId"]
     prediction = model.predict([[home_team_id, away_team_id]])
     logging.info("Prediction made successfully")
     return jsonify({"prediction": int(prediction.argmax(axis=-1))})

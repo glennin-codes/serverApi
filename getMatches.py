@@ -41,3 +41,4 @@ def get_scheduled_matches():
     # If the API call is unsuccessful, return an error message
     else:
         return jsonify({'error': 'Failed to fetch scheduled matches.'}), response.status_code
+const leagues = ["CL","PL" "BL1", "FL1", "SA", "PPL", "PD", "BSA"];
