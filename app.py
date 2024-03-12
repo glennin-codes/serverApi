@@ -10,7 +10,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from flask_cors import CORS
 from tensorflow.keras.models import load_model
-
+import numpy as np
 
 # Build the REST API with Flask
 app = Flask(__name__)
@@ -22,8 +22,10 @@ CORS(app)
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
-    home_team_id = data["home_team_id"]
-    away_team_id = data["away_team_id"]
+    home_team_id = int(data["home_team_id"])
+    away_team_id = int(data["away_team_id"])
+    print( home_team_id, away_team_id)
+    input_data = np.array([[home_team_id, away_team_id]], dtype=np.float32)
     prediction = model.predict([[home_team_id, away_team_id]])
     logging.info("Prediction made successfully")
     return jsonify({"prediction": int(prediction.argmax(axis=-1))})
